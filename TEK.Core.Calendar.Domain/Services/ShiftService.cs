@@ -26,7 +26,7 @@ namespace TEK.Core.Calendar.Domain.Services
 
         public async Task<ShiftResponse> GetShifts()
         {
-            var result =  await _unitOfWork.GetRepository<Shift>().GetAll().ToListAsync();
+            var result =  await _unitOfWork.GetRepository<Shift>().GetAll().OrderBy(x => x.Id).ToListAsync();
 
             return new ShiftResponse
             {
@@ -37,7 +37,7 @@ namespace TEK.Core.Calendar.Domain.Services
 
         public async Task<DoctorResponse> GetDoctors()
         {
-            var result = await _unitOfWork.GetRepository<Doctor>().GetAll().ToListAsync();
+            var result = await _unitOfWork.GetRepository<Doctor>().GetAll().OrderBy(x => x.Id).ToListAsync();
 
             return new DoctorResponse
             {
@@ -48,7 +48,7 @@ namespace TEK.Core.Calendar.Domain.Services
 
         public async Task<RoomResponse> GetRooms()
         {
-            var result = await _unitOfWork.GetRepository<Room>().GetAll().ToListAsync();
+            var result = await _unitOfWork.GetRepository<Room>().GetAll().OrderBy(x => x.Id).ToListAsync();
 
             return new RoomResponse
             {
@@ -59,7 +59,7 @@ namespace TEK.Core.Calendar.Domain.Services
 
         public async Task<TimeResponse> GetTimes()
         {
-            var result = await _unitOfWork.GetRepository<Time>().GetAll().ToListAsync();
+            var result = await _unitOfWork.GetRepository<Time>().GetAll().OrderBy(x => x.Id).ToListAsync();
 
             return new TimeResponse
             {
@@ -68,7 +68,18 @@ namespace TEK.Core.Calendar.Domain.Services
             };
         }
 
-        public async Task<Shift> Add(AddShiftRequest request)
+        public async Task<ScheduleResponse> GetSchedules()
+        {
+            var result = await _unitOfWork.GetRepository<Schedule>().GetAll().OrderBy(x => x.Id).ToListAsync();
+
+            return new ScheduleResponse
+            {
+                Total = result.Count,
+                Data = result
+            };
+        }
+
+        public async Task<Shift> AddShift(AddShiftRequest request)
         {
             var s = await _unitOfWork.GetRepository<Shift>().FindAsync(x => x.RoomId == request.RoomId && x.DoctorId == request.DoctorId && x.Date.Date == request.Date.Date && x.TimeId == request.TimeId);
 

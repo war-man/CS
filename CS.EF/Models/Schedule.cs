@@ -15,6 +15,6 @@ namespace CS.EF.Models
         [Column("patient_id")]
         public string PatientId { get; set; }
         [Column("order")]
-        public string Order { get; set; }
+        public int Order { get; set; }
     }
 }

@@ -46,10 +46,17 @@ namespace TEK.Core.Calendar.Controllers
             return Ok(new ApiOkResponse(response));
         }
 
-        [HttpPost, Route("add")]
+        [HttpGet, Route("all-schedules")]
+        public async Task<IActionResult> GetSChedules()
+        {
+            var response = await _shiftService.GetSchedules();
+            return Ok(new ApiOkResponse(response));
+        }
+
+        [HttpPost, Route("add-shift")]
         public async Task<IActionResult> AddShifts(AddShiftRequest shift)
         {
-            var response = await _shiftService.Add(shift);
+            var response = await _shiftService.AddShift(shift);
             return Ok(new ApiOkResponse(response));
         }
     }

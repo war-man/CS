@@ -11,6 +11,7 @@ namespace TEK.Core.Service.Interfaces
         Task<DoctorResponse> GetDoctors();
         Task<RoomResponse> GetRooms();
         Task<TimeResponse> GetTimes();
-        Task<Shift> Add(AddShiftRequest request);
+        Task<ScheduleResponse> GetSchedules();
+        Task<Shift> AddShift(AddShiftRequest request);
     }
 }
