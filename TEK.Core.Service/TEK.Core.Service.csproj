@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Interfaces\IExternalSystemService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CS.EF\CS.EF.csproj" />
+    <ProjectReference Include="..\CS.ViewModel\CS.VM.csproj" />
+    <ProjectReference Include="..\TEK.Core.UoW\TEK.Core.UoW.csproj" />
+    <ProjectReference Include="..\TEK.Core\TEK.Core.csproj" />
+  </ItemGroup>
+
+</Project>

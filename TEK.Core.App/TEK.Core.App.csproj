@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>f3cb96a8-b9d1-4c8b-bae7-95911be2a9a7</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\TransactionInfoController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Import_Device_Template.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Audit.NET" Version="15.3.0" />
+    <PackageReference Include="Audit.NET.PostgreSql" Version="15.3.0" />
+    <PackageReference Include="Audit.WebApi.Core" Version="15.3.0" />
+    <PackageReference Include="AutoMapper" Version="10.0.0" />
+    <PackageReference Include="EPPlus" Version="5.4.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.7" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
+    <PackageReference Include="Quartz" Version="3.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CS.Common\CS.Common.csproj" />
+    <ProjectReference Include="..\CS.EF\CS.EF.csproj" />
+    <ProjectReference Include="..\CS.Helper\CS.Helper.csproj" />
+    <ProjectReference Include="..\TEK.Core.App.Domain\TEK.Core.App.Domain.csproj" />
+    <ProjectReference Include="..\TEK.Core.Service\TEK.Core.Service.csproj" />
+    <ProjectReference Include="..\TEK.Core\TEK.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\ApkPackage\" />
+    <Folder Include="wwwroot\Logs\" />
+    <Folder Include="wwwroot\Bundle\" />
+    <Folder Include="wwwroot\export\" />
+  </ItemGroup>
+
+
+</Project>

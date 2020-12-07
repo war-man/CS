@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Interfaces\**" />
+    <EmbeddedResource Remove="Interfaces\**" />
+    <None Remove="Interfaces\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\ExternalSystemService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CS.Common\CS.Common.csproj" />
+    <ProjectReference Include="..\CS.EF\CS.EF.csproj" />
+    <ProjectReference Include="..\CS.ViewModel\CS.VM.csproj" />
+    <ProjectReference Include="..\TEK.Core.Service\TEK.Core.Service.csproj" />
+    <ProjectReference Include="..\TEK.Core.UoW\TEK.Core.UoW.csproj" />
+    <ProjectReference Include="..\TEK.Core\TEK.Core.csproj" />
+    <ProjectReference Include="..\TEK.Email\TEK.Email.csproj" />
+  </ItemGroup>
+
+</Project>

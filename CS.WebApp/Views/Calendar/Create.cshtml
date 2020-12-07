@@ -1,0 +1,48 @@
+﻿@model CS.VM.Request.AddShiftRequest
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>AddShiftRequest</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" asp-controller="Calendar" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.RoomId" class="control-label"></label>
+                <input asp-for="@Model.RoomId" class="form-control" />
+                <span asp-validation-for="@Model.RoomId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.DoctorId" class="control-label"></label>
+                <input asp-for="@Model.DoctorId" class="form-control" />
+                <span asp-validation-for="@Model.DoctorId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Date" class="control-label"></label>
+                <input asp-for="@Model.Date" class="form-control" />
+                <span asp-validation-for="@Model.Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.TimeId" class="control-label"></label>
+                <input asp-for="@Model.TimeId" class="form-control" />
+                <span asp-validation-for="@Model.TimeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
