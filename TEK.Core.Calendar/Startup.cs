@@ -39,6 +39,7 @@ namespace TEK.Core.Calendar
             });
 
             services.AddTransient<IShiftService, ShiftService>();
+            services.AddTransient<ICardService, CardService>();
 
             // Automapper
             var mappingConfig = new MapperConfiguration(mc =>

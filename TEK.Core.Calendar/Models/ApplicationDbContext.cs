@@ -13,6 +13,8 @@ namespace TEK.Core.Calendar.Models
 
         public virtual DbSet<Patient> Patients { get; set; }
 
+        public virtual DbSet<Card> Cards { get; set; }
+
         //public virtual DbSet<Service> Services { get; set; }
 
         public virtual DbSet<Schedule> Schedules { get; set; }
