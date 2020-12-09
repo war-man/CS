@@ -65,5 +65,28 @@ namespace TEK.Core.Calendar.Controllers
             var response = await _cardService.BlockCard(cardNumber);
             return Ok(new ApiOkResponse(response));
         }
+
+        [HttpPost, Route("change-card-status")]
+        public async Task<IActionResult> ChangeCardStatus(ChangeCardStatusRequest changeCardStatusRequest)
+        {
+            int cardNumber = changeCardStatusRequest.CardNumber;
+            if (changeCardStatusRequest.Status == "RETURNED")
+            {
+                var response = await _cardService.ReturnCard(cardNumber);
+                return Ok(new ApiOkResponse(response));
+            }
+            else if (changeCardStatusRequest.Status == "CHANGED")
+            {
+                var response = await _cardService.ChangeCard(cardNumber);
+                return Ok(new ApiOkResponse(response));
+            }
+            else if (changeCardStatusRequest.Status == "BLOCKED")
+            {
+                var response = await _cardService.BlockCard(cardNumber);
+                return Ok(new ApiOkResponse(response));
+            }
+
+            return NotFound();
+        }
     }
 }

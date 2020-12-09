@@ -148,7 +148,7 @@ namespace TEK.Core.Calendar.Domain.Services
         private string newCardID()
         {
             int cc = _unitOfWork.GetRepository<Card>().GetAll().Count();
-            if (cc < 10)
+            if (cc < 9)
             {
                 return "C00" + (cc + 1);
             }
