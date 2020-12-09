@@ -134,6 +134,17 @@ namespace TEK.Core.Calendar.Domain.Services
             return card;
         }
 
+        public async Task<CardResponse> GetAllCards()
+        {
+            var result = await _unitOfWork.GetRepository<Card>().GetAll().OrderBy(x => x.Id).ToListAsync();
+
+            return new CardResponse
+            {
+                Total = result.Count,
+                Data = result
+            };
+        }
+
         public async Task<PatientResponse> GetAllPatients()
         {
             var result = await _unitOfWork.GetRepository<Patient>().GetAll().OrderBy(x => x.Id).ToListAsync();

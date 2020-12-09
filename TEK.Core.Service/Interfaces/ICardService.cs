@@ -8,6 +8,7 @@ namespace TEK.Core.Service.Interfaces
 {
     public interface ICardService
     {
+        Task<CardResponse> GetAllCards();
         Task<PatientResponse> GetAllPatients();
         Task<Card> GetCardByPatientId(string patientId);
         Task<Card> CreateNewCard(CreateCardRequest createCardRequest);
