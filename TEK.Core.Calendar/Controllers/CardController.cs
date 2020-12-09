@@ -17,6 +17,13 @@ namespace TEK.Core.Calendar.Controllers
             _cardService = cardService;
         }
 
+        [HttpGet, Route("get-all-patients")]
+        public async Task<IActionResult> GetAllPatients()
+        {
+            var response = await _cardService.GetAllPatients();
+            return Ok(new ApiOkResponse(response));
+        }
+
         [HttpGet, Route("get-card-by-patientid")]
         public async Task<IActionResult> GetCardByPatientId(string patientId)
         {
@@ -42,6 +49,13 @@ namespace TEK.Core.Calendar.Controllers
         public async Task<IActionResult> ReturnCard(int cardNumber)
         {
             var response = await _cardService.ReturnCard(cardNumber);
+            return Ok(new ApiOkResponse(response));
+        }
+
+        [HttpPost, Route("change")]
+        public async Task<IActionResult> ChangeCard(int cardNumber)
+        {
+            var response = await _cardService.ChangeCard(cardNumber);
             return Ok(new ApiOkResponse(response));
         }
 

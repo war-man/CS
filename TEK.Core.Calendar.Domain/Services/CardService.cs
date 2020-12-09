@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using CS.EF.Models;
 using CS.VM.Request;
+using CS.VM.Response;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,8 +34,13 @@ namespace TEK.Core.Calendar.Domain.Services
         {
             var s = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.PatientId == createCardRequest.PatientId);
 
+            var p = await _unitOfWork.GetRepository<Patient>().FindAsync(x => x.Id == createCardRequest.PatientId);
+
             if (s != null)
                 throw new Exception("Bệnh nhân đã có thẻ");
+
+            if (p == null)
+                throw new Exception("Bệnh nhân không tồn tại trong hệ thống");
 
             var card = new Card
             {
@@ -55,7 +62,7 @@ namespace TEK.Core.Calendar.Domain.Services
         {
             var card = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.CardNumber == topUpRequest.CardNumber && x.Status != "BLOCKED" && x.Status != "CHANGED" && x.Status != "RETURNED");
 
-            if (card == null) throw new Exception("Thẻ không tồn tại hoặc bị khóa!");
+            if (card == null) throw new Exception("Thẻ không tồn tại hoặc bị từ chối");
 
             card.Money += topUpRequest.Money;
             card.ExpiredDate = DateTime.Now.AddYears(1);
@@ -70,7 +77,7 @@ namespace TEK.Core.Calendar.Domain.Services
         {
             var card = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.CardNumber == CardNumber);
 
-            if (card == null) throw new Exception("Card không tồn tại!");
+            if (card == null) throw new Exception("Thẻ không tồn tại");
 
             card.Money = 0;
             card.PatientId = "";
@@ -82,43 +89,42 @@ namespace TEK.Core.Calendar.Domain.Services
             return card;
         }
 
-        //public async Task<Card> ChangeCard(int CardNumber)
-        //{
-        //    var s = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.CardNumber == CardNumber);
+        public async Task<Card> ChangeCard(int CardNumber)
+        {
+            var card = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.CardNumber == CardNumber && x.Status != "BLOCKED" && x.Status != "CHANGED" && x.Status != "RETURNED");
 
-        //    if (s == null)
-        //        throw new Exception("Bệnh nhân chưa có thẻ");
+            if (card == null)
+                throw new Exception("Bệnh nhân chưa có thẻ hoặc thẻ bị từ chối");
 
-        //    //hủy thẻ cũ, set money về 0
-        //    var card = s;
-        //    card.Money = 0;
-        //    card.PatientId = "";
-        //    card.Status = "CHANGED";
+            //tạo thẻ mới, lấy money từ thẻ cũ qua
+            var card2 = new Card
+            {
+                Id = newCardID(),
+                CardNumber = newCardNumber(),
+                Money = card.Money,
+                CreatedDate = DateTime.Now,
+                ExpiredDate = DateTime.Now.AddYears(1),
+                PatientId = card.PatientId,
+                Status = "OK"
+            };
 
-        //    _unitOfWork.GetRepository<Card>().Update(card);
+            _unitOfWork.GetRepository<Card>().Add(card2);
 
-        //    //tạo thẻ mới, lấy money từ thẻ cũ qua
-        //    var card2 = new Card
-        //    {
-        //        Id = newCardID(),
-        //        CardNumber = newCardNumber(),
-        //        Money = s.Money,
-        //        CreatedDate = DateTime.Now,
-        //        ExpiredDate = DateTime.Now.AddYears(1),
-        //        PatientId = PatientId,
-        //        Status = "OK"
-        //    };
+            //hủy thẻ cũ, set money về 0
+            card.Money = 0;
+            card.PatientId = "";
+            card.Status = "CHANGED";
 
-        //    _unitOfWork.GetRepository<Card>().Add(card2);
-        //    await _unitOfWork.CommitAsync();
-        //    return card2;
-        //}
+            _unitOfWork.GetRepository<Card>().Update(card);
+            await _unitOfWork.CommitAsync();
+            return card2;
+        }
 
         public async Task<Card> BlockCard(int CardNumber)
         {
             var card = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.CardNumber == CardNumber);
 
-            if (card == null) throw new Exception("Card không tồn tại!");
+            if (card == null) throw new Exception("Card không tồn tại");
 
             card.Status = "BLOCKED";
 
@@ -126,6 +132,17 @@ namespace TEK.Core.Calendar.Domain.Services
             await _unitOfWork.CommitAsync();
 
             return card;
+        }
+
+        public async Task<PatientResponse> GetAllPatients()
+        {
+            var result = await _unitOfWork.GetRepository<Patient>().GetAll().OrderBy(x => x.Id).ToListAsync();
+
+            return new PatientResponse
+            {
+                Total = result.Count,
+                Data = result
+            };
         }
 
         private string newCardID()
