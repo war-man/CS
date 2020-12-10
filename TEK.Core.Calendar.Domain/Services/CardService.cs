@@ -227,6 +227,32 @@ namespace TEK.Core.Calendar.Domain.Services
             return revStats;
         }
 
+        public async Task<PatientCardResponse> GetFullPatientCard(PatientCardRequest patientCardRequest)
+        {
+            if (patientCardRequest.CardNumber == 0)
+            {
+                var p = await _unitOfWork.GetRepository<Patient>().FindAsync(x => x.Id == patientCardRequest.PatientId);
+                var c = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.PatientId == patientCardRequest.PatientId);
+                if (c == null)
+                    return new PatientCardResponse(p);
+                if (p == null)
+                    return new PatientCardResponse(c);
+                return new PatientCardResponse(p, c);
+            }
+            else if (string.IsNullOrEmpty(patientCardRequest.PatientId))
+            {
+                var c = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.CardNumber == patientCardRequest.CardNumber);
+                var p = await _unitOfWork.GetRepository<Patient>().FindAsync(x => x.Id == c.PatientId);
+                if (c == null)
+                    return new PatientCardResponse(p);
+                if (p == null)
+                    return new PatientCardResponse(c);
+                return new PatientCardResponse(p, c);
+            }
+
+            return null;
+        }
+
         private string newCardID()
         {
             int cc = _unitOfWork.GetRepository<Card>().GetAll().Count();

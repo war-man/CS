@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CS.EF.Models;
 using CS.VM.Request;
+using CS.VM.Response;
 using System;
 
 namespace TEK.Core.Calendar.AutoMapper

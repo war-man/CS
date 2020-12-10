@@ -52,6 +52,13 @@ namespace TEK.Core.Calendar.Controllers
             return Ok(new ApiOkResponse(response));
         }
 
+        [HttpPost, Route("get-full-info")]
+        public async Task<IActionResult> GetFullPatientCard(PatientCardRequest patientCardRequest)
+        {
+            var response = await _cardService.GetFullPatientCard(patientCardRequest);
+            return Ok(new ApiOkResponse(response));
+        }
+
         [HttpPost, Route("create")]
         public async Task<IActionResult> CreateNewCard(CreateCardRequest createCardRequest)
         {

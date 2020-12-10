@@ -19,5 +19,6 @@ namespace TEK.Core.Service.Interfaces
         Task<Card> BlockCard(int CardNumber);
         Task<List<AuditLog>> GetAllAuditLogs();
         Task<List<RevenueStatistic>> GetRevenueStatistics();
+        Task<PatientCardResponse> GetFullPatientCard(PatientCardRequest patientCardRequest);
     }
 }
