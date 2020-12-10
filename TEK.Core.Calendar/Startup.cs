@@ -1,3 +1,6 @@
+using Audit.Core;
+using Audit.PostgreSql.Configuration;
+using Audit.WebApi;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TEK.Core.App.Middleware;
 using TEK.Core.Calendar.AutoMapper;
 using TEK.Core.Calendar.Domain.Services;
 using TEK.Core.Calendar.Models;
@@ -28,6 +32,22 @@ namespace TEK.Core.Calendar
             services.AddControllers();
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
+
+            services.AddLogging();
+
+            services.AddControllersWithViews(options =>
+            {
+                options.AddAuditFilter(config => config
+                    .LogAllActions()
+                    .WithEventType("{verb}.{controller}.{action}")
+                    .IncludeHeaders(ctx => !ctx.ModelState.IsValid)
+                    //.IncludeRequestBody()
+                    .IncludeModelState()
+                    .IncludeResponseBody(ctx => ctx.HttpContext.Response.StatusCode == 200));
+
+                options.Filters.Add(typeof(ValidateModelAttribute));
+                //options.Filters.Add(new AuditIgnoreActionFilter());
+            });
 
             var sqlConnectionString = Configuration.GetConnectionString(nameof(ApplicationDbContext));
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -72,6 +92,17 @@ namespace TEK.Core.Calendar
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger Users Demo V1");
             });
+
+            var sqlConnectionString = Configuration.GetConnectionString(nameof(ApplicationDbContext));
+
+            Audit.Core.Configuration.Setup()
+            .UsePostgreSql(config => config
+            .ConnectionString(sqlConnectionString)
+            .TableName("audit_log")
+            .IdColumnName("id")
+            .DataColumn("data", DataType.JSONB)
+            .LastUpdatedColumnName("updated_date"))
+            .WithCreationPolicy(EventCreationPolicy.InsertOnStartReplaceOnEnd);
 
             app.UseRouting();
 

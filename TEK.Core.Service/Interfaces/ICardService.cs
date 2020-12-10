@@ -1,4 +1,5 @@
 ﻿using CS.EF.Models;
+using CS.VM.Models;
 using CS.VM.Request;
 using CS.VM.Response;
 using System.Collections.Generic;
@@ -13,8 +14,10 @@ namespace TEK.Core.Service.Interfaces
         Task<Card> GetCardByPatientId(string patientId);
         Task<Card> CreateNewCard(CreateCardRequest createCardRequest);
         Task<Card> TopUp(TopUpRequest topUpRequest);
-        Task<Card> ReturnCard(int CardNumber);
+        Task<ReturnCardResponse> ReturnCard(int CardNumber);
         Task<Card> ChangeCard(int CardNumber);
         Task<Card> BlockCard(int CardNumber);
+        Task<List<AuditLog>> GetAllAuditLogs();
+        Task<List<RevenueStatistic>> GetRevenueStatistics();
     }
 }

@@ -23,6 +23,8 @@ namespace TEK.Core.Calendar.Models
 
         public virtual DbSet<Time> Times { get; set; }
 
+        public virtual DbSet<AuditLog> AuditLogs { get; set; }
+
         #endregion
 
 
