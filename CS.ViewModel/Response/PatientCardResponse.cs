@@ -56,7 +56,7 @@ namespace CS.VM.Response
             CardStatus = card.Status;
         }
 
-            public PatientCardResponse()
+        public PatientCardResponse()
         {
 
         }

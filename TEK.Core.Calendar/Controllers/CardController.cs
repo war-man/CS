@@ -1,5 +1,6 @@
 ﻿using CS.VM.Request;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using TEK.Core.App.Middleware;
 using TEK.Core.Service.Interfaces;
@@ -42,6 +43,20 @@ namespace TEK.Core.Calendar.Controllers
         public async Task<IActionResult> GetRevenueStatistics()
         {
             var response = await _cardService.GetRevenueStatistics();
+            return Ok(new ApiOkResponse(response));
+        }
+
+        [HttpGet, Route("get-revenue-statistic-by-action")]
+        public async Task<IActionResult> GetRevenueStatisticsByAction(string action)
+        {
+            var response = await _cardService.GetRevenueStatisticsByAction(action);
+            return Ok(new ApiOkResponse(response));
+        }
+
+        [HttpGet, Route("get-revenue-statistic-by-date")]
+        public async Task<IActionResult> GetRevenueStatisticsByDate(DateTime date)
+        {
+            var response = await _cardService.GetRevenueStatisticsByDate(date);
             return Ok(new ApiOkResponse(response));
         }
 

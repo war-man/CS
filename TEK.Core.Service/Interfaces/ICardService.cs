@@ -2,6 +2,7 @@
 using CS.VM.Models;
 using CS.VM.Request;
 using CS.VM.Response;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,6 +20,8 @@ namespace TEK.Core.Service.Interfaces
         Task<Card> BlockCard(int CardNumber);
         Task<List<AuditLog>> GetAllAuditLogs();
         Task<List<RevenueStatistic>> GetRevenueStatistics();
+        Task<List<RevenueStatistic>> GetRevenueStatisticsByAction(string Action);
+        Task<List<RevenueStatistic>> GetRevenueStatisticsByDate(DateTime Date);
         Task<PatientCardResponse> GetFullPatientCard(PatientCardRequest patientCardRequest);
     }
 }

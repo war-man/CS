@@ -227,6 +227,38 @@ namespace TEK.Core.Calendar.Domain.Services
             return revStats;
         }
 
+        public async Task<List<RevenueStatistic>> GetRevenueStatisticsByAction(string Action)
+        {
+            var lstRS = await GetRevenueStatistics();
+
+            var lstRSr = new List<RevenueStatistic>();
+            foreach(var RS in lstRS)
+            {
+                if (RS.Action == Action)
+                {
+                    lstRSr.Add(RS);
+                }
+            }
+
+            return lstRSr;
+        }
+
+        public async Task<List<RevenueStatistic>> GetRevenueStatisticsByDate(DateTime Date)
+        {
+            var lstRS = await GetRevenueStatistics();
+
+            var lstRSr = new List<RevenueStatistic>();
+            foreach (var RS in lstRS)
+            {
+                if (RS.Date.Date == Date.Date)
+                {
+                    lstRSr.Add(RS);
+                }
+            }
+
+            return lstRSr;
+        }
+
         public async Task<PatientCardResponse> GetFullPatientCard(PatientCardRequest patientCardRequest)
         {
             if (patientCardRequest.CardNumber == 0)
