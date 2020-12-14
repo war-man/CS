@@ -21,6 +21,6 @@ namespace CS.EF.Models
         [Column("patient_id")]
         public string PatientId { get; set; }
         [Column("status")]
-        public string Status { get; set; }
+        public int Status { get; set; }
     }
 }

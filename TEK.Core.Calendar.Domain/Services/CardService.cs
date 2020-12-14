@@ -53,7 +53,7 @@ namespace TEK.Core.Calendar.Domain.Services
                 CreatedDate = DateTime.Now,
                 ExpiredDate = DateTime.Now.AddYears(1),
                 PatientId = createCardRequest.PatientId,
-                Status = "OK"
+                Status = 1
             };
 
             _unitOfWork.GetRepository<Card>().Add(card);
@@ -63,7 +63,7 @@ namespace TEK.Core.Calendar.Domain.Services
 
         public async Task<Card> TopUp(TopUpRequest topUpRequest)
         {
-            var card = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.CardNumber == topUpRequest.CardNumber && x.Status != "BLOCKED" && x.Status != "CHANGED" && x.Status != "RETURNED");
+            var card = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.CardNumber == topUpRequest.CardNumber && x.Status == 1);
 
             if (card == null) throw new Exception("Thẻ không tồn tại hoặc bị từ chối");
 
@@ -91,12 +91,12 @@ namespace TEK.Core.Calendar.Domain.Services
                 CreatedDate = card.CreatedDate,
                 ExpiredDate = card.ExpiredDate,
                 PatientId = "",
-                Status = "RETURNED"
+                Status = 3
             };
 
             card.Money = 0;
             card.PatientId = "";
-            card.Status = "RETURNED";
+            card.Status = 3;
 
             _unitOfWork.GetRepository<Card>().Update(card);
             await _unitOfWork.CommitAsync();
@@ -106,7 +106,7 @@ namespace TEK.Core.Calendar.Domain.Services
 
         public async Task<Card> ChangeCard(int CardNumber)
         {
-            var card = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.CardNumber == CardNumber && x.Status != "BLOCKED" && x.Status != "CHANGED" && x.Status != "RETURNED");
+            var card = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.CardNumber == CardNumber && x.Status == 1);
 
             if (card == null)
                 throw new Exception("Bệnh nhân chưa có thẻ hoặc thẻ bị từ chối");
@@ -120,7 +120,7 @@ namespace TEK.Core.Calendar.Domain.Services
                 CreatedDate = DateTime.Now,
                 ExpiredDate = DateTime.Now.AddYears(1),
                 PatientId = card.PatientId,
-                Status = "OK"
+                Status = 1
             };
 
             _unitOfWork.GetRepository<Card>().Add(card2);
@@ -128,7 +128,7 @@ namespace TEK.Core.Calendar.Domain.Services
             //hủy thẻ cũ, set money về 0
             card.Money = 0;
             card.PatientId = "";
-            card.Status = "CHANGED";
+            card.Status = 2;
 
             _unitOfWork.GetRepository<Card>().Update(card);
             await _unitOfWork.CommitAsync();
@@ -141,7 +141,7 @@ namespace TEK.Core.Calendar.Domain.Services
 
             if (card == null) throw new Exception("Card không tồn tại");
 
-            card.Status = "BLOCKED";
+            card.Status = 4;
 
             _unitOfWork.GetRepository<Card>().Update(card);
             await _unitOfWork.CommitAsync();
@@ -257,6 +257,31 @@ namespace TEK.Core.Calendar.Domain.Services
             }
 
             return lstRSr;
+        }
+
+        public async Task<List<RevenueStatistic>> GetRevenueStatisticsByActionAndDate(string Action, DateTime Date)
+        {
+            var lstRS = await GetRevenueStatistics();
+
+            var lstRSr1 = new List<RevenueStatistic>();
+            foreach (var RS in lstRS)
+            {
+                if (RS.Date.Date == Date.Date)
+                {
+                    lstRSr1.Add(RS);
+                }
+            }
+
+            var lstRSr2 = new List<RevenueStatistic>();
+            foreach (var RS in lstRSr1)
+            {
+                if (RS.Action == Action)
+                {
+                    lstRSr2.Add(RS);
+                }
+            }
+
+            return lstRSr2;
         }
 
         public async Task<PatientCardResponse> GetFullPatientCard(PatientCardRequest patientCardRequest)

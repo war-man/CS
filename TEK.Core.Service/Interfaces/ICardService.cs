@@ -22,6 +22,7 @@ namespace TEK.Core.Service.Interfaces
         Task<List<RevenueStatistic>> GetRevenueStatistics();
         Task<List<RevenueStatistic>> GetRevenueStatisticsByAction(string Action);
         Task<List<RevenueStatistic>> GetRevenueStatisticsByDate(DateTime Date);
+        Task<List<RevenueStatistic>> GetRevenueStatisticsByActionAndDate(string Action, DateTime Date);
         Task<PatientCardResponse> GetFullPatientCard(PatientCardRequest patientCardRequest);
     }
 }

@@ -13,6 +13,6 @@ namespace CS.VM.Response
         public DateTime CreatedDate { get; set; }
         public DateTime ExpiredDate { get; set; }
         public string PatientId { get; set; }
-        public string Status { get; set; }
+        public int Status { get; set; }
     }
 }

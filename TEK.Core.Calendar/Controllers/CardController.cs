@@ -60,6 +60,13 @@ namespace TEK.Core.Calendar.Controllers
             return Ok(new ApiOkResponse(response));
         }
 
+        [HttpGet, Route("get-revenue-statistic-by-action-and-date")]
+        public async Task<IActionResult> GetRevenueStatisticsByActionAndDate(string action, DateTime date)
+        {
+            var response = await _cardService.GetRevenueStatisticsByActionAndDate(action, date);
+            return Ok(new ApiOkResponse(response));
+        }
+
         [HttpGet, Route("get-card-by-patientid")]
         public async Task<IActionResult> GetCardByPatientId(string patientId)
         {

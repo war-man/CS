@@ -18,7 +18,7 @@ namespace CS.VM.Response
         public int Money { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ExpiredDate { get; set; }
-        public string CardStatus { get; set; }
+        public int CardStatus { get; set; }
 
         public PatientCardResponse(Patient patient, Card card)
         {
