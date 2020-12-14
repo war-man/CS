@@ -5,24 +5,22 @@ using System.Text;
 
 namespace CS.EF.Models
 {
-    [Table("Card", Schema = "public")]
-    public class Card
+    [Table("Invoice", Schema = "public")]
+    public class Invoice
     {
         [Column("id")]
-        public string Id { get; set; }
-        [Column("card_number")]
-        public int CardNumber { get; set; }
-        [Column("money")]
-        public int Money { get; set; }
+        public Guid Id { get; set; }
         [Column("created_date")]
         public DateTime CreatedDate { get; set; }
-        [Column("expired_date")]
-        public DateTime ExpiredDate { get; set; }
         [Column("patient_id")]
         public string PatientId { get; set; }
+        [Column("content")]
+        public string Content { get; set; }
+        [Column("cost")]
+        public int Cost { get; set; }
+        [Column("create_by")]
+        public string CreateBy { get; set; }
         [Column("status")]
         public int Status { get; set; }
-        [Column("created_by")]
-        public string CreatedBy { get; set; }
     }
 }

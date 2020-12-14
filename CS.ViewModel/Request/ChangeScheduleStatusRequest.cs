@@ -4,9 +4,9 @@ using System.Text;
 
 namespace CS.VM.Request
 {
-    public class ChangeCardStatusRequest
+    public class ChangeScheduleStatusRequest
     {
-        public int CardNumber { get; set; }
+        public string Id { get; set; }
         public int Status { get; set; }
     }
 }

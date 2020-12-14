@@ -5,6 +5,7 @@ using CS.VM.Request;
 using CS.VM.Response;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TEK.Core.Service.Interfaces;
@@ -90,6 +91,174 @@ namespace TEK.Core.Calendar.Domain.Services
             _unitOfWork.GetRepository<Shift>().Add(shift);
             await _unitOfWork.CommitAsync();
             return shift;
+        }
+
+        public async Task<string> CreateNewPatient(CreateNewPatientRequest request)
+        {
+            var id = newPatientID();
+            Patient patient = new Patient
+            {
+                Id = id,
+                Name = request.Name,
+                Birthday = request.Birthday,
+                Gender = request.Gender,
+                Phone = request.Phone,
+                Address = request.Address
+            };
+
+             _unitOfWork.GetRepository<Patient>().Add(patient);
+            await _unitOfWork.CommitAsync();
+            return id;
+        }
+
+        public async Task<NewScheduleResponse> RequestNewSchedule(NewScheduleRequest request)
+        {
+            var s = await _unitOfWork.GetRepository<Schedule>().FindAsync(x => x.PatientId == request.PatientId && x.ShiftId == request.ShiftId);
+
+            if (s != null)
+                throw new Exception("Bệnh nhân đã đăng ký ca này");
+
+            var ordr = 1;
+            var s1 = await _unitOfWork.GetRepository<Schedule>().FindAsync(x => x.ShiftId == request.ShiftId && x.PatientId != request.PatientId);
+
+            if (s1 != null)
+                ordr = s1.Order + 1;
+
+            var id = newScheduleID();
+            Schedule schedule = new Schedule
+            {
+                Id = id,
+                ShiftId = request.ShiftId,
+                PatientId = request.PatientId,
+                Status = 1,
+                Order = ordr,
+                BHYT = request.BHYT
+            };
+
+            _unitOfWork.GetRepository<Schedule>().Add(schedule);
+            await _unitOfWork.CommitAsync();
+
+            var p = await _unitOfWork.GetRepository<Patient>().FindAsync(x => x.Id == request.PatientId);
+
+            var shift = await _unitOfWork.GetRepository<Shift>().FindAsync(x => x.Id == request.ShiftId);
+
+            var room = await _unitOfWork.GetRepository<Room>().FindAsync(x => x.Id == shift.RoomId);
+
+            var doctor = await _unitOfWork.GetRepository<Doctor>().FindAsync(x => x.Id == shift.DoctorId);
+
+            var time = await _unitOfWork.GetRepository<Time>().FindAsync(x => x.Id == shift.TimeId);
+
+            return new NewScheduleResponse
+            {
+                Id = id,
+                PatientId = p.Id,
+                Name = p.Name,
+                Birthday = p.Birthday,
+                Room = room.Name,
+                Doctor = doctor.Name,
+                Date = shift.Date,
+                Time = time.ShiftTime,
+                Order = ordr,
+                Status = 1,
+                BHYT = request.BHYT
+            };
+        }
+
+        public async Task<List<NewScheduleResponse>> GetAllScheduleResponses(string roomId)
+        {
+            var shifts = await _unitOfWork.GetRepository<Shift>().GetAll().Where(x => x.RoomId == roomId).ToListAsync();
+
+            var lstNsr = new List<NewScheduleResponse>();
+
+            foreach (var shift in shifts)
+            {
+                var schedules = await _unitOfWork.GetRepository<Schedule>().GetAll().Where(x => x.ShiftId == shift.Id).ToListAsync();
+
+                if (schedules != null)
+                {
+                    foreach (var schedule in schedules)
+                    {
+                        var patient = await _unitOfWork.GetRepository<Patient>().FindAsync(x => x.Id == schedule.PatientId);
+
+                        var room = await _unitOfWork.GetRepository<Room>().FindAsync(x => x.Id == shift.RoomId);
+
+                        var doctor = await _unitOfWork.GetRepository<Doctor>().FindAsync(x => x.Id == shift.DoctorId);
+
+                        var time = await _unitOfWork.GetRepository<Time>().FindAsync(x => x.Id == shift.TimeId);
+
+                        var ncr = new NewScheduleResponse
+                        {
+                            Id = schedule.Id,
+                            PatientId = schedule.PatientId,
+                            Name = patient.Name,
+                            Birthday = patient.Birthday,
+                            Room = room.Name,
+                            Doctor = doctor.Name,
+                            Date = shift.Date,
+                            Time = time.ShiftTime,
+                            Order = schedule.Order,
+                            Status = schedule.Status,
+                            BHYT = schedule.BHYT
+                        };
+
+                        lstNsr.Add(ncr);
+                    }
+                }
+            }
+
+            return lstNsr;
+        }
+
+        public async Task<Schedule> ChangeScheduleStatus(ChangeScheduleStatusRequest request)
+        {
+            var schedule = await _unitOfWork.GetRepository<Schedule>().FindAsync(x => x.Id == request.Id);
+
+            schedule.Status = request.Status;
+
+            _unitOfWork.GetRepository<Schedule>().Update(schedule);
+
+            if (request.Status == 5)
+            {
+                var shift = await _unitOfWork.GetRepository<Shift>().GetAll().FirstOrDefaultAsync(x => x.Id == schedule.ShiftId);
+                var service = await _unitOfWork.GetRepository<CS.EF.Models.Services>().FindAsync(x => x.RoomId == shift.RoomId);
+
+                var invoice = new Invoice
+                {
+                    Id = new Guid(),
+                    CreatedDate = DateTime.Now,
+                    PatientId = schedule.PatientId,
+                    Content = "Khám bệnh" + service.Name.Remove(0, 2).ToLower(),
+                    Cost = service.Cost,
+                    CreateBy = "SYSTEM",
+                    Status = 1
+                };
+
+                _unitOfWork.GetRepository<Invoice>().Add(invoice);
+            }
+
+            await _unitOfWork.CommitAsync();
+
+            return schedule;
+        }
+
+        private string newPatientID()
+        {
+            int cc = _unitOfWork.GetRepository<Patient>().GetAll().Count();
+            if (cc < 9)
+            {
+                return "P00" + (cc + 1);
+            }
+            return "P0" + (cc + 1);
+        }
+
+        private string newScheduleID()
+        {
+            int cc = _unitOfWork.GetRepository<Schedule>().GetAll().Count();
+            if (cc < 9)
+            {
+                return "SC00" + (cc + 1);
+            }
+            return "SC0" + (cc + 1);
         }
     }
 }

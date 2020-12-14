@@ -16,5 +16,9 @@ namespace CS.EF.Models
         public string PatientId { get; set; }
         [Column("order")]
         public int Order { get; set; }
+        [Column("status")]
+        public int Status { get; set; }
+        [Column("BHYT")]
+        public bool BHYT { get; set; }
     }
 }

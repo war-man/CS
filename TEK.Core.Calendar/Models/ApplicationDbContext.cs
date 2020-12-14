@@ -15,7 +15,7 @@ namespace TEK.Core.Calendar.Models
 
         public virtual DbSet<Card> Cards { get; set; }
 
-        //public virtual DbSet<Service> Services { get; set; }
+        public virtual DbSet<Services> Servicess { get; set; }
 
         public virtual DbSet<Schedule> Schedules { get; set; }
 
@@ -24,6 +24,8 @@ namespace TEK.Core.Calendar.Models
         public virtual DbSet<Time> Times { get; set; }
 
         public virtual DbSet<AuditLog> AuditLogs { get; set; }
+
+        public virtual DbSet<Invoice> Invoices { get; set; }
 
         #endregion
 

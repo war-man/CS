@@ -6,7 +6,7 @@ using System.Text;
 namespace CS.EF.Models
 {
     [Table("Service", Schema = "public")]
-    public class Service
+    public class Services
     {
         [Column("id")]
         public string Id { get; set; }

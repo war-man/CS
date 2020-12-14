@@ -12,13 +12,13 @@ namespace CS.EF.Models
         public string Id { get; set; }
         [Column("name")]
         public string Name { get; set; }
-        [Column("phone")]
-        public string Phone { get; set; }
-        [Column("address")]
-        public string Address { get; set; }
         [Column("birthday")]
         public DateTime Birthday { get; set; }
         [Column("gender")]
         public bool Gender { get; set; }
+        [Column("phone")]
+        public string Phone { get; set; }
+        [Column("address")]
+        public string Address { get; set; }
     }
 }

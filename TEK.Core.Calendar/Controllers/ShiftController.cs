@@ -59,5 +59,41 @@ namespace TEK.Core.Calendar.Controllers
             var response = await _shiftService.AddShift(shift);
             return Ok(new ApiOkResponse(response));
         }
+
+        [HttpGet, Route("all-schedule-responses")]
+        public async Task<IActionResult> GetAllScheduleResponses(string roomId)
+        {
+            var response = await _shiftService.GetAllScheduleResponses(roomId);
+            return Ok(new ApiOkResponse(response));
+        }
+
+        [HttpPost, Route("request-new-schedule")]
+        public async Task<IActionResult> RequestNewSchedule(RequestNewScheduleController request)
+        {
+            string patientId;
+            if (string.IsNullOrEmpty(request.PatientId))
+            {
+                patientId = await _shiftService.CreateNewPatient(request);
+                request.PatientId = patientId;
+            }
+
+            var newScheduleRequest = new NewScheduleRequest
+            {
+                PatientId = request.PatientId,
+                ShiftId = request.ShiftId,
+                BHYT = request.BHYT
+            };
+
+            var response = await _shiftService.RequestNewSchedule(newScheduleRequest);
+
+            return Ok(new ApiOkResponse(response));
+        }
+
+        [HttpPost, Route("change-schedule-status")]
+        public async Task<IActionResult> ChangeScheduleStatus(ChangeScheduleStatusRequest request)
+        {
+            var response = await _shiftService.ChangeScheduleStatus(request);
+            return Ok(new ApiOkResponse(response));
+        }
     }
 }

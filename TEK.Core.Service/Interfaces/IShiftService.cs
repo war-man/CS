@@ -1,6 +1,7 @@
 ﻿using CS.EF.Models;
 using CS.VM.Request;
 using CS.VM.Response;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace TEK.Core.Service.Interfaces
@@ -13,5 +14,9 @@ namespace TEK.Core.Service.Interfaces
         Task<TimeResponse> GetTimes();
         Task<ScheduleResponse> GetSchedules();
         Task<Shift> AddShift(AddShiftRequest request);
+        Task<string> CreateNewPatient(CreateNewPatientRequest request);
+        Task<NewScheduleResponse> RequestNewSchedule(NewScheduleRequest request);
+        Task<List<NewScheduleResponse>> GetAllScheduleResponses(string roomId);
+        Task<Schedule> ChangeScheduleStatus(ChangeScheduleStatusRequest request);
     }
 }
