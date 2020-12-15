@@ -27,6 +27,8 @@ namespace TEK.Core.Calendar.Models
 
         public virtual DbSet<Invoice> Invoices { get; set; }
 
+        public virtual DbSet<User> Users { get; set; }
+
         #endregion
 
 

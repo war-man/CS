@@ -241,6 +241,29 @@ namespace TEK.Core.Calendar.Domain.Services
             return schedule;
         }
 
+        public async Task<Invoice> ChangeInvoiceStatus(ChangeInvoiceStatusRequest request)
+        {
+            var invoice = await _unitOfWork.GetRepository<Invoice>().FindAsync(x => x.Id == request.Id);
+
+            invoice.Status = request.Status;
+
+            if (request.Status == 2)
+            {
+                var card = await _unitOfWork.GetRepository<Card>().FindAsync(x => x.PatientId == invoice.PatientId && x.Status == 1);
+
+                if (card != null)
+                {
+                    card.Money = card.Money - invoice.Cost;
+
+                    _unitOfWork.GetRepository<Card>().Update(card);
+                }
+            }
+
+            _unitOfWork.GetRepository<Invoice>().Update(invoice);
+            await _unitOfWork.CommitAsync();
+            return invoice;
+        }
+
         private string newPatientID()
         {
             int cc = _unitOfWork.GetRepository<Patient>().GetAll().Count();

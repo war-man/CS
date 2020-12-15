@@ -2,13 +2,17 @@ using Audit.Core;
 using Audit.PostgreSql.Configuration;
 using Audit.WebApi;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Text;
 using TEK.Core.App.Middleware;
 using TEK.Core.Calendar.AutoMapper;
 using TEK.Core.Calendar.Domain.Services;
@@ -58,8 +62,30 @@ namespace TEK.Core.Calendar
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger Users Demo", Version = "v1" });
             });
 
+            var key = Encoding.ASCII.GetBytes("2504166E48DC19294B86773F798DEE7996D3973E");
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+           .AddJwtBearer(x =>
+           {
+               x.RequireHttpsMetadata = false;
+               x.SaveToken = true;
+               x.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuerSigningKey = true,
+                   IssuerSigningKey = new SymmetricSecurityKey(key),
+                   ValidateIssuer = false,
+                   ValidateAudience = false,
+                   // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                   ClockSkew = TimeSpan.Zero
+               };
+           });
+
             services.AddTransient<IShiftService, ShiftService>();
             services.AddTransient<ICardService, CardService>();
+            services.AddTransient<IUserService, UserService>();
 
             // Automapper
             var mappingConfig = new MapperConfiguration(mc =>
