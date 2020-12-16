@@ -11,11 +11,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Text;
 using TEK.Core.App.Middleware;
 using TEK.Core.Calendar.AutoMapper;
 using TEK.Core.Calendar.Domain.Services;
+using TEK.Core.Calendar.Middleware;
 using TEK.Core.Calendar.Models;
 using TEK.Core.Service.Interfaces;
 
@@ -60,6 +62,14 @@ namespace TEK.Core.Calendar
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger Users Demo", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                });
             });
 
             var key = Encoding.ASCII.GetBytes("2504166E48DC19294B86773F798DEE7996D3973E");
@@ -112,6 +122,9 @@ namespace TEK.Core.Calendar
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseMiddleware<JwtMiddleware>();
+
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>

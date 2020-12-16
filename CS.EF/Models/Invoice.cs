@@ -12,6 +12,8 @@ namespace CS.EF.Models
         public Guid Id { get; set; }
         [Column("created_date")]
         public DateTime CreatedDate { get; set; }
+        [Column("schedule_id")]
+        public string ScheduleId { get; set; }
         [Column("patient_id")]
         public string PatientId { get; set; }
         [Column("content")]

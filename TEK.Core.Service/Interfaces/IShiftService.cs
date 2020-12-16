@@ -18,6 +18,7 @@ namespace TEK.Core.Service.Interfaces
         Task<NewScheduleResponse> RequestNewSchedule(NewScheduleRequest request);
         Task<List<NewScheduleResponse>> GetAllScheduleResponses(string roomId);
         Task<Schedule> ChangeScheduleStatus(ChangeScheduleStatusRequest request);
+        Task<List<Invoice>> GetInvoices();
         Task<Invoice> ChangeInvoiceStatus(ChangeInvoiceStatusRequest request);
     }
 }

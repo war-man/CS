@@ -30,5 +30,16 @@ namespace TEK.Core.Calendar.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("log-in")]
+        public async Task<IActionResult> LogIn(AuthenticateRequest model)
+        {
+            var response = await _userService.LogIn(model);
+
+            if (response == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(response);
+        }
     }
 }

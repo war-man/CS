@@ -1,4 +1,5 @@
-﻿using CS.VM.Request;
+﻿using CS.EF.Models;
+using CS.VM.Request;
 using CS.VM.Response;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,7 @@ namespace TEK.Core.Service.Interfaces
     public interface IUserService
     {
         Task<AuthenticateResponse> Authenticate(AuthenticateRequest model);
+        Task<User> LogIn(AuthenticateRequest request);
+        Task<User> GetUserByID(string id);
     }
 }

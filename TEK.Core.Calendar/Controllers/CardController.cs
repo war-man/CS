@@ -1,4 +1,5 @@
 ﻿using CS.VM.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using TEK.Core.Service.Interfaces;
 
 namespace TEK.Core.Calendar.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CardController : ControllerBase

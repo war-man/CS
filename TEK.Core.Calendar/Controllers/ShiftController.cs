@@ -96,6 +96,13 @@ namespace TEK.Core.Calendar.Controllers
             return Ok(new ApiOkResponse(response));
         }
 
+        [HttpGet, Route("all-invoices")]
+        public async Task<IActionResult> GetInvoices()
+        {
+            var response = await _shiftService.GetInvoices();
+            return Ok(new ApiOkResponse(response));
+        }
+
         [HttpPost, Route("change-invoice-status")]
         public async Task<IActionResult> ChangeInvoiceStatus(ChangeInvoiceStatusRequest request)
         {

@@ -39,6 +39,20 @@ namespace TEK.Core.Calendar.Domain.Services
             return new AuthenticateResponse(user, token);
         }
 
+        public async Task<User> GetUserByID(string id)
+        {
+            var user = await _unitOfWork.GetRepository<User>().FindAsync(x => x.Id.ToLower() == id.ToLower());
+
+            return user;
+        }
+
+        public async Task<User> LogIn(AuthenticateRequest request)
+        {
+            var user = await _unitOfWork.GetRepository<User>().FindAsync(x => x.Username == request.Username && x.Password == x.Password);
+
+            return user;
+        }
+
         private string GenerateJwtToken(User user)
         {
             // generate token that is valid for 7 days

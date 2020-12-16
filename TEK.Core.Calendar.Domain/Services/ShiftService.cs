@@ -166,9 +166,12 @@ namespace TEK.Core.Calendar.Domain.Services
 
         public async Task<List<NewScheduleResponse>> GetAllScheduleResponses(string roomId)
         {
-            var shifts = await _unitOfWork.GetRepository<Shift>().GetAll().Where(x => x.RoomId == roomId).ToListAsync();
+            var shifts = !string.IsNullOrEmpty(roomId) ? await _unitOfWork.GetRepository<Shift>().GetAll().Where(x => x.RoomId == roomId).ToListAsync()
+                : await _unitOfWork.GetRepository<Shift>().GetAll().ToListAsync();
 
             var lstNsr = new List<NewScheduleResponse>();
+
+            var lstNsrC = new List<NewScheduleResponse>();
 
             foreach (var shift in shifts)
             {
@@ -201,8 +204,23 @@ namespace TEK.Core.Calendar.Domain.Services
                             BHYT = schedule.BHYT
                         };
 
-                        lstNsr.Add(ncr);
+                        if (schedule.Status != 5)
+                        {
+                            lstNsr.Add(ncr);
+                        }
+                        else
+                        {
+                            lstNsrC.Add(ncr);
+                        }
                     }
+                }
+            }
+
+            if (lstNsrC.Count > 0)
+            {
+                foreach (var ncr in lstNsrC)
+                {
+                    lstNsr.Add(ncr);
                 }
             }
 
@@ -227,6 +245,7 @@ namespace TEK.Core.Calendar.Domain.Services
                     Id = new Guid(),
                     CreatedDate = DateTime.Now,
                     PatientId = schedule.PatientId,
+                    ScheduleId = schedule.Id,
                     Content = "Khám bệnh" + service.Name.Remove(0, 2).ToLower(),
                     Cost = service.Cost,
                     CreateBy = "SYSTEM",
@@ -237,6 +256,13 @@ namespace TEK.Core.Calendar.Domain.Services
             }
 
             await _unitOfWork.CommitAsync();
+
+            return schedule;
+        }
+
+        public async Task<List<Invoice>> GetInvoices()
+        {
+            var schedule = await _unitOfWork.GetRepository<Invoice>().GetAll().ToListAsync();
 
             return schedule;
         }
