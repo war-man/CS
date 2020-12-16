@@ -11,7 +11,6 @@ namespace TEK.Core.Calendar.AutoMapper
         public MappingProfile()
         {
             CreateMap<AddShiftRequest, Shift>()
-               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
                .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.RoomId))
                .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.DoctorId))
                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))

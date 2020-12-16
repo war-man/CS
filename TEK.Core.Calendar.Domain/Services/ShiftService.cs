@@ -27,7 +27,7 @@ namespace TEK.Core.Calendar.Domain.Services
 
         public async Task<ShiftResponse> GetShifts()
         {
-            var result =  await _unitOfWork.GetRepository<Shift>().GetAll().OrderBy(x => x.Id).ToListAsync();
+            var result =  await _unitOfWork.GetRepository<Shift>().GetAll().OrderBy(x => x.Date).ToListAsync();
 
             return new ShiftResponse
             {
@@ -88,6 +88,7 @@ namespace TEK.Core.Calendar.Domain.Services
                 throw new Exception("Trùng lịch");
 
             var shift = _mapper.Map<Shift>(request);
+            shift.Id = newShiftID();
             _unitOfWork.GetRepository<Shift>().Add(shift);
             await _unitOfWork.CommitAsync();
             return shift;
@@ -308,6 +309,16 @@ namespace TEK.Core.Calendar.Domain.Services
                 return "SC00" + (cc + 1);
             }
             return "SC0" + (cc + 1);
+        }
+
+        private string newShiftID()
+        {
+            int cc = _unitOfWork.GetRepository<Shift>().GetAll().Count();
+            if (cc < 9)
+            {
+                return "S00" + (cc + 1);
+            }
+            return "S0" + (cc + 1);
         }
     }
 }
