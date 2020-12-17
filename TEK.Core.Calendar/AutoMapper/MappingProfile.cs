@@ -19,6 +19,7 @@ namespace TEK.Core.Calendar.AutoMapper
 
             CreateMap<AddNewPatientRequest, Patient>();
             CreateMap<AddNewDoctorRequest, Doctor>();
+            CreateMap<AddNewUserRequest, User>();
         }
     }
 }

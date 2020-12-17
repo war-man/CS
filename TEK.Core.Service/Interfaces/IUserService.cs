@@ -13,5 +13,7 @@ namespace TEK.Core.Service.Interfaces
         Task<AuthenticateResponse> Authenticate(AuthenticateRequest model);
         Task<User> LogIn(AuthenticateRequest request);
         Task<User> GetUserByID(string id);
+        Task<List<User>> GetUsers();
+        Task<User> AddNewUser(AddNewUserRequest request);
     }
 }

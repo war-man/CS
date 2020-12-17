@@ -11,6 +11,8 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Security.Claims;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace TEK.Core.Calendar.Domain.Services
 {
@@ -50,6 +52,22 @@ namespace TEK.Core.Calendar.Domain.Services
         {
             var user = await _unitOfWork.GetRepository<User>().FindAsync(x => x.Username == request.Username && x.Password == x.Password);
 
+            return user;
+        }
+
+        public async Task<List<User>> GetUsers()
+        {
+            var users = await _unitOfWork.GetRepository<User>().GetAll().ToListAsync();
+
+            return users;
+        }
+
+        public async Task<User> AddNewUser(AddNewUserRequest request)
+        {
+            var user = _mapper.Map<User>(request);
+            user.Id = newUserID();
+            _unitOfWork.GetRepository<User>().Add(user);
+            await _unitOfWork.CommitAsync();
             return user;
         }
 
@@ -97,6 +115,16 @@ namespace TEK.Core.Calendar.Domain.Services
                 // return null if validation fails
                 return null;
             }
+        }
+
+        private string newUserID()
+        {
+            int cc = _unitOfWork.GetRepository<User>().GetAll().Count();
+            if (cc < 9)
+            {
+                return "US00" + (cc + 1);
+            }
+            return "US0" + (cc + 1);
         }
     }
 }
