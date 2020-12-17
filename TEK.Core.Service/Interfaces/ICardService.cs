@@ -12,6 +12,7 @@ namespace TEK.Core.Service.Interfaces
     {
         Task<CardResponse> GetAllCards();
         Task<PatientResponse> GetAllPatients();
+        Task<Patient> AddNewPatient(AddNewPatientRequest request);
         Task<Card> GetCardByPatientId(string patientId);
         Task<Card> CreateNewCard(CreateCardRequest createCardRequest);
         Task<Card> TopUp(TopUpRequest topUpRequest);

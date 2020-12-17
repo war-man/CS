@@ -27,13 +27,6 @@ namespace TEK.Core.Calendar.Controllers
             return Ok(new ApiOkResponse(response));
         }
 
-        [HttpGet, Route("get-all-patients")]
-        public async Task<IActionResult> GetAllPatients()
-        {
-            var response = await _cardService.GetAllPatients();
-            return Ok(new ApiOkResponse(response));
-        }
-
         [HttpGet, Route("get-all-auditlogs")]
         public async Task<IActionResult> GetAllAuditLogs()
         {

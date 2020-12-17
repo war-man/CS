@@ -15,6 +15,10 @@ namespace TEK.Core.Calendar.AutoMapper
                .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.DoctorId))
                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))
                .ForMember(dest => dest.TimeId, opt => opt.MapFrom(src => src.TimeId));
+
+
+            CreateMap<AddNewPatientRequest, Patient>();
+            CreateMap<AddNewDoctorRequest, Doctor>();
         }
     }
 }

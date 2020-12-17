@@ -47,6 +47,15 @@ namespace TEK.Core.Calendar.Domain.Services
             };
         }
 
+        public async Task<Doctor> AddNewDoctor(AddNewDoctorRequest request)
+        {
+            var doctor = _mapper.Map<Doctor>(request);
+            doctor.Id = newDoctorID();
+            _unitOfWork.GetRepository<Doctor>().Add(doctor);
+            await _unitOfWork.CommitAsync();
+            return doctor;
+        }
+
         public async Task<RoomResponse> GetRooms()
         {
             var result = await _unitOfWork.GetRepository<Room>().GetAll().OrderBy(x => x.Id).ToListAsync();
@@ -319,6 +328,16 @@ namespace TEK.Core.Calendar.Domain.Services
                 return "S00" + (cc + 1);
             }
             return "S0" + (cc + 1);
+        }
+
+        private string newDoctorID()
+        {
+            int cc = _unitOfWork.GetRepository<Doctor>().GetAll().Count();
+            if (cc < 9)
+            {
+                return "D00" + (cc + 1);
+            }
+            return "D0" + (cc + 1);
         }
     }
 }

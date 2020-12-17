@@ -171,6 +171,15 @@ namespace TEK.Core.Calendar.Domain.Services
             };
         }
 
+        public async Task<Patient> AddNewPatient(AddNewPatientRequest request)
+        {
+            var patient = _mapper.Map<Patient>(request);
+            patient.Id = newPatientID();
+            _unitOfWork.GetRepository<Patient>().Add(patient);
+            await _unitOfWork.CommitAsync();
+            return patient;
+        }
+
         public async Task<List<AuditLog>> GetAllAuditLogs()
         {
             var result = await _unitOfWork.GetRepository<AuditLog>().GetAll().OrderBy(x => x.Id).ToListAsync();
@@ -325,6 +334,16 @@ namespace TEK.Core.Calendar.Domain.Services
             Random rd = new Random();
 
             return rd.Next(100000000, 999999999);
+        }
+
+        private string newPatientID()
+        {
+            int cc = _unitOfWork.GetRepository<Patient>().GetAll().Count();
+            if (cc < 9)
+            {
+                return "P00" + (cc + 1);
+            }
+            return "P0" + (cc + 1);
         }
     }
 }

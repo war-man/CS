@@ -25,13 +25,6 @@ namespace TEK.Core.Calendar.Controllers
             return Ok(new ApiOkResponse(response));
         }
 
-        [HttpGet, Route("all-doctors")]
-        public async Task<IActionResult> GetDoctors()
-        {
-            var response = await _shiftService.GetDoctors();
-            return Ok(new ApiOkResponse(response));
-        }
-
         [HttpGet, Route("all-rooms")]
         public async Task<IActionResult> GetRooms()
         {
