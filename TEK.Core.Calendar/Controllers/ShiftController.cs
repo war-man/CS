@@ -32,6 +32,13 @@ namespace TEK.Core.Calendar.Controllers
             return Ok(new ApiOkResponse(response));
         }
 
+        [HttpGet, Route("add-new-room")]
+        public async Task<IActionResult> AddNewRoom(string roomName)
+        {
+            var response = await _shiftService.AddNewRoom(roomName);
+            return Ok(new ApiOkResponse(response));
+        }
+
         [HttpGet, Route("all-times")]
         public async Task<IActionResult> GetTimes()
         {

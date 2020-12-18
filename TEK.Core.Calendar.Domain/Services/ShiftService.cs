@@ -67,6 +67,24 @@ namespace TEK.Core.Calendar.Domain.Services
             };
         }
 
+        public async Task<Room> AddNewRoom(string roomName)
+        {
+            var s = await _unitOfWork.GetRepository<Room>().FindAsync(x => x.Name == roomName);
+
+            if (s != null)
+                throw new Exception("Trùng tên");
+
+            var room = new Room
+            {
+                Id = newRoomID(),
+                Name = roomName
+            };
+
+            _unitOfWork.GetRepository<Room>().Add(room);
+            await _unitOfWork.CommitAsync();
+            return room;
+        }
+
         public async Task<TimeResponse> GetTimes()
         {
             var result = await _unitOfWork.GetRepository<Time>().GetAll().OrderBy(x => x.Id).ToListAsync();
@@ -338,6 +356,16 @@ namespace TEK.Core.Calendar.Domain.Services
                 return "D00" + (cc + 1);
             }
             return "D0" + (cc + 1);
+        }
+
+        private string newRoomID()
+        {
+            int cc = _unitOfWork.GetRepository<Room>().GetAll().Count();
+            if (cc < 9)
+            {
+                return "R00" + (cc + 1);
+            }
+            return "R0" + (cc + 1);
         }
     }
 }
