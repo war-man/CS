@@ -180,6 +180,23 @@ namespace TEK.Core.Calendar.Domain.Services
             return patient;
         }
 
+        public async Task<bool> UpdatePatient(Patient patient)
+        {
+            var p = await _unitOfWork.GetRepository<Patient>().FindAsync(x => x.Id == patient.Id);
+
+            if (p != null)
+            {
+                p.Name = patient.Name;
+                p.Phone = patient.Phone;
+                p.Address = patient.Address;
+                p.Gender = patient.Gender;
+                p.Birthday = patient.Birthday;
+                await _unitOfWork.CommitAsync();
+                return true;
+            }
+            return false;
+        }
+
         public async Task<List<AuditLog>> GetAllAuditLogs()
         {
             var result = await _unitOfWork.GetRepository<AuditLog>().GetAll().OrderBy(x => x.Id).ToListAsync();

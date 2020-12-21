@@ -47,6 +47,21 @@ namespace TEK.Core.Calendar.Domain.Services
             };
         }
 
+        public async Task<bool> UpdateDoctor(Doctor doctor)
+        {
+            var d = await _unitOfWork.GetRepository<Doctor>().FindAsync(x => x.Id == doctor.Id);
+
+            if (d != null)
+            {
+                d.Name = doctor.Name;
+                d.Phone = doctor.Phone;
+                d.Email = doctor.Email;
+                await _unitOfWork.CommitAsync();
+                return true;
+            }
+            return false;
+        }
+
         public async Task<Doctor> AddNewDoctor(AddNewDoctorRequest request)
         {
             var doctor = _mapper.Map<Doctor>(request);
@@ -83,6 +98,19 @@ namespace TEK.Core.Calendar.Domain.Services
             _unitOfWork.GetRepository<Room>().Add(room);
             await _unitOfWork.CommitAsync();
             return room;
+        }
+
+        public async Task<bool> UpdateRoom(Room room)
+        {
+            var r = await _unitOfWork.GetRepository<Room>().FindAsync(x => x.Id == room.Id);
+
+            if (r != null)
+            {
+                r.Name = room.Name;
+                await _unitOfWork.CommitAsync();
+                return true;
+            }
+            return false;
         }
 
         public async Task<TimeResponse> GetTimes()

@@ -1,4 +1,5 @@
-﻿using CS.VM.Request;
+﻿using CS.EF.Models;
+using CS.VM.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -55,6 +56,13 @@ namespace TEK.Core.Calendar.Controllers
         public async Task<IActionResult> AddNewUser(AddNewUserRequest request)
         {
             var response = await _userService.AddNewUser(request);
+            return Ok(new ApiOkResponse(response));
+        }
+
+        [HttpPut("update-user")]
+        public async Task<IActionResult> UpdateUser(User user)
+        {
+            var response = await _userService.UpdateUser(user);
             return Ok(new ApiOkResponse(response));
         }
     }

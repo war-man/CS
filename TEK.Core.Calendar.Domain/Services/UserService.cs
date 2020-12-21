@@ -28,7 +28,7 @@ namespace TEK.Core.Calendar.Domain.Services
             _mapper = mapper;
         }
 
-        public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
+        public async Task<string> Authenticate(AuthenticateRequest model)
         {
             var user = await _unitOfWork.GetRepository<User>().FindAsync(x => x.Username == model.Username && x.Password == model.Password);
 
@@ -38,7 +38,7 @@ namespace TEK.Core.Calendar.Domain.Services
             // authentication successful so generate jwt token
             var token = GenerateJwtToken(user);
 
-            return new AuthenticateResponse(user, token);
+            return token;
         }
 
         public async Task<User> GetUserByID(string id)
@@ -71,19 +71,51 @@ namespace TEK.Core.Calendar.Domain.Services
             return user;
         }
 
+        public async Task<bool> UpdateUser(User user)
+        {
+            var s = await _unitOfWork.GetRepository<User>().FindAsync(x => x.Id == user.Id);
+
+            if (s != null)
+            {
+                s.FirstName = user.FirstName;
+                s.LastName = user.LastName;
+                s.Birthday = user.Birthday;
+                s.Phone = user.Phone;
+                s.IsActive = user.IsActive;
+                s.Address = user.Address;
+                s.Username = user.Username;
+                s.Password = user.Password;
+                s.Role = user.Role;
+                await _unitOfWork.CommitAsync();
+                return true;
+            }
+            return false;
+        }
+
         private string GenerateJwtToken(User user)
         {
-            // generate token that is valid for 7 days
+            var mySecret = "2504166E48DC19294B86773F798DEE7996D3973E";
+            var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
+
+            var myIssuer = "http://mysite1.com";
+            var myAudience = "http://myaudience1.com";
+
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("2504166E48DC19294B86773F798DEE7996D3973E");
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[] {
-                    new Claim("id", user.Id)
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name,(user.FirstName + " " + user.LastName).ToString()),
+                    new Claim(ClaimTypes.MobilePhone,user.Phone.ToString()),
+                    new Claim(ClaimTypes.DateOfBirth,user.Birthday.ToString()),
+                    new Claim(ClaimTypes.Role,user.Role.ToString()),
                 }),
-                Expires = DateTime.Now.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Expires = DateTime.UtcNow.AddDays(7),
+                Issuer = myIssuer,
+                Audience = myAudience,
+                SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
             };
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }

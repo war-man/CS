@@ -33,7 +33,6 @@ namespace CS.EF.Models
         [JsonIgnore]
         public string Password { get; set; }
         [Column("role")]
-        [JsonIgnore]
         public string Role { get; set; }
     }
 }

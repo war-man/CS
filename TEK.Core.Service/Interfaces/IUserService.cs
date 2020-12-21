@@ -10,10 +10,11 @@ namespace TEK.Core.Service.Interfaces
 {
     public interface IUserService
     {
-        Task<AuthenticateResponse> Authenticate(AuthenticateRequest model);
+        Task<string> Authenticate(AuthenticateRequest model);
         Task<User> LogIn(AuthenticateRequest request);
         Task<User> GetUserByID(string id);
         Task<List<User>> GetUsers();
         Task<User> AddNewUser(AddNewUserRequest request);
+        Task<bool> UpdateUser(User user);
     }
 }

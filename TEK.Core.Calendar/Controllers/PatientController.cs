@@ -1,4 +1,5 @@
-﻿using CS.VM.Request;
+﻿using CS.EF.Models;
+using CS.VM.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -32,6 +33,13 @@ namespace TEK.Core.Calendar.Controllers
         public async Task<IActionResult> AddNewPatient(AddNewPatientRequest request)
         {
             var response = await _cardService.AddNewPatient(request);
+            return Ok(new ApiOkResponse(response));
+        }
+
+        [HttpPut, Route("update-patient")]
+        public async Task<IActionResult> UpdatePatient(Patient patient)
+        {
+            var response = await _cardService.UpdatePatient(patient);
             return Ok(new ApiOkResponse(response));
         }
     }
