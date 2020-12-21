@@ -8,5 +8,6 @@ namespace CS.VM.Request
     {
         public string Id { get; set; }
         public int Status { get; set; }
+        public string CreatedBy { get; set; }
     }
 }

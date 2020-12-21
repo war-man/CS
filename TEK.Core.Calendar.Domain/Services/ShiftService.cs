@@ -317,7 +317,7 @@ namespace TEK.Core.Calendar.Domain.Services
                     ScheduleId = schedule.Id,
                     Content = "Khám bệnh" + service.Name.Remove(0, 2).ToLower(),
                     Cost = service.Cost,
-                    CreateBy = "SYSTEM",
+                    CreateBy = request.CreatedBy,
                     Status = 1
                 };
 
