@@ -107,9 +107,9 @@ namespace TEK.Core.Calendar.Domain.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name,(user.FirstName + " " + user.LastName).ToString()),
-                    new Claim(ClaimTypes.MobilePhone,user.Phone.ToString()),
-                    new Claim(ClaimTypes.DateOfBirth,user.Birthday.ToString()),
-                    new Claim(ClaimTypes.Role,user.Role.ToString()),
+                    new Claim(ClaimTypes.UserData, user.Username),
+                    new Claim(ClaimTypes.DateOfBirth, user.Birthday.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 Issuer = myIssuer,
