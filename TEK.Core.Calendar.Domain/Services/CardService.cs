@@ -53,6 +53,7 @@ namespace TEK.Core.Calendar.Domain.Services
                 CreatedDate = DateTime.Now,
                 ExpiredDate = DateTime.Now.AddYears(1),
                 PatientId = createCardRequest.PatientId,
+                CreatedBy = createCardRequest.CreatedBy,
                 Status = 1
             };
 

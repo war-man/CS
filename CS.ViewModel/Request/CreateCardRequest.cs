@@ -8,5 +8,6 @@ namespace CS.VM.Request
     {
         public int Money { get; set; }
         public string PatientId { get; set; }
+        public string CreatedBy { get; set; }
     }
 }

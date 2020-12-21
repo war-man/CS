@@ -18,5 +18,12 @@ namespace CS.EF.Models
         public DateTime Date { get; set; }
         [Column("time_id")]
         public string TimeId { get; set; }
+        [Column("status")]
+        public bool Status { get; set; }
+
+        public Shift()
+        {
+            Status = true;
+        }
     }
 }

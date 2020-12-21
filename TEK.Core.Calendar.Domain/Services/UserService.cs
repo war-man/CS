@@ -33,7 +33,9 @@ namespace TEK.Core.Calendar.Domain.Services
             var user = await _unitOfWork.GetRepository<User>().FindAsync(x => x.Username == model.Username && x.Password == model.Password);
 
             // return null if user not found
-            if (user == null) return null;
+            if (user == null) return "Username or password is incorrect";
+
+            if (user.IsActive == false) return "Account has been blocked";
 
             // authentication successful so generate jwt token
             var token = GenerateJwtToken(user);
@@ -83,9 +85,8 @@ namespace TEK.Core.Calendar.Domain.Services
                 s.Phone = user.Phone;
                 s.IsActive = user.IsActive;
                 s.Address = user.Address;
-                s.Username = user.Username;
-                s.Password = user.Password;
                 s.Role = user.Role;
+                s.Gender = user.Gender;
                 await _unitOfWork.CommitAsync();
                 return true;
             }

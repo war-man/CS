@@ -9,6 +9,7 @@ namespace TEK.Core.Service.Interfaces
     public interface IShiftService
     {
         Task<ShiftResponse> GetShifts();
+        Task<bool> DeleteShift(string shiftID);
         Task<DoctorResponse> GetDoctors();
         Task<Doctor> AddNewDoctor(AddNewDoctorRequest request);
         Task<bool> UpdateDoctor(Doctor doctor);

@@ -25,6 +25,13 @@ namespace TEK.Core.Calendar.Controllers
             return Ok(new ApiOkResponse(response));
         }
 
+        [HttpGet, Route("delete-shifts")]
+        public async Task<IActionResult> DeleteShifts(string shiftID)
+        {
+            var response = await _shiftService.DeleteShift(shiftID);
+            return Ok(new ApiOkResponse(response));
+        }
+
         [HttpGet, Route("all-rooms")]
         public async Task<IActionResult> GetRooms()
         {

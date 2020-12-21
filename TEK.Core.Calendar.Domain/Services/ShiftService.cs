@@ -27,13 +27,26 @@ namespace TEK.Core.Calendar.Domain.Services
 
         public async Task<ShiftResponse> GetShifts()
         {
-            var result =  await _unitOfWork.GetRepository<Shift>().GetAll().OrderBy(x => x.Date).ToListAsync();
+            var result =  await _unitOfWork.GetRepository<Shift>().GetAll().Where(x => x.Status == true).OrderBy(x => x.Date).ToListAsync();
 
             return new ShiftResponse
             {
                 Total = result.Count,
                 Data = result
             };
+        }
+
+        public async Task<bool> DeleteShift(string shiftID)
+        {
+            var shift = await _unitOfWork.GetRepository<Shift>().FindAsync(x => x.Id == shiftID && x.Status == true);
+
+            if (shift != null)
+            {
+                shift.Status = false;
+                await _unitOfWork.CommitAsync();
+                return true;
+            }
+            return false;
         }
 
         public async Task<DoctorResponse> GetDoctors()
@@ -137,7 +150,7 @@ namespace TEK.Core.Calendar.Domain.Services
 
         public async Task<Shift> AddShift(AddShiftRequest request)
         {
-            var s = await _unitOfWork.GetRepository<Shift>().FindAsync(x => x.RoomId == request.RoomId && x.DoctorId == request.DoctorId && x.Date.Date == request.Date.Date && x.TimeId == request.TimeId);
+            var s = await _unitOfWork.GetRepository<Shift>().FindAsync(x => x.RoomId == request.RoomId && x.DoctorId == request.DoctorId && x.Date.Date == request.Date.Date && x.TimeId == request.TimeId && x.Status == true);
 
             if (s != null)
                 throw new Exception("Trùng lịch");
