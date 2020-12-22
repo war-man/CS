@@ -25,6 +25,20 @@ namespace TEK.Core.Calendar.Controllers
             return Ok(new ApiOkResponse(response));
         }
 
+        [HttpGet, Route("get-shifts-by-room")]
+        public async Task<IActionResult> GetShiftsByRoom(string roomID)
+        {
+            var response = await _shiftService.GetShiftsByRoom(roomID);
+            return Ok(new ApiOkResponse(response));
+        }
+
+        [HttpPost, Route("add-shift")]
+        public async Task<IActionResult> AddShifts(AddShiftRequest shift)
+        {
+            var response = await _shiftService.AddShift(shift);
+            return Ok(new ApiOkResponse(response));
+        }
+
         [HttpGet, Route("delete-shifts")]
         public async Task<IActionResult> DeleteShifts(string shiftID)
         {
@@ -67,17 +81,17 @@ namespace TEK.Core.Calendar.Controllers
             return Ok(new ApiOkResponse(response));
         }
 
-        [HttpPost, Route("add-shift")]
-        public async Task<IActionResult> AddShifts(AddShiftRequest shift)
-        {
-            var response = await _shiftService.AddShift(shift);
-            return Ok(new ApiOkResponse(response));
-        }
-
         [HttpGet, Route("all-schedule-responses")]
         public async Task<IActionResult> GetAllScheduleResponses(string roomId)
         {
             var response = await _shiftService.GetAllScheduleResponses(roomId);
+            return Ok(new ApiOkResponse(response));
+        }
+
+        [HttpGet, Route("all-schedule-responses-by-shift")]
+        public async Task<IActionResult> GetAllScheduleResponsesByShift(string shiftId)
+        {
+            var response = await _shiftService.GetAllScheduleResponsesByShift(shiftId);
             return Ok(new ApiOkResponse(response));
         }
 

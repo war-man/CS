@@ -36,6 +36,17 @@ namespace TEK.Core.Calendar.Domain.Services
             };
         }
 
+        public async Task<ShiftResponse> GetShiftsByRoom(string roomID)
+        {
+            var result = await _unitOfWork.GetRepository<Shift>().GetAll().Where(x => x.Status == true && x.RoomId == roomID).OrderBy(x => x.Date).ToListAsync();
+
+            return new ShiftResponse
+            {
+                Total = result.Count,
+                Data = result
+            };
+        }
+
         public async Task<bool> DeleteShift(string shiftID)
         {
             var shift = await _unitOfWork.GetRepository<Shift>().FindAsync(x => x.Id == shiftID && x.Status == true);
@@ -188,10 +199,10 @@ namespace TEK.Core.Calendar.Domain.Services
                 throw new Exception("Bệnh nhân đã đăng ký ca này");
 
             var ordr = 1;
-            var s1 = await _unitOfWork.GetRepository<Schedule>().FindAsync(x => x.ShiftId == request.ShiftId && x.PatientId != request.PatientId);
+            var s1 = await _unitOfWork.GetRepository<Schedule>().GetAll().Where(x => x.ShiftId == request.ShiftId && x.PatientId != request.PatientId).ToListAsync();
 
             if (s1 != null)
-                ordr = s1.Order + 1;
+                ordr = s1.Count + 1;
 
             var id = newScheduleID();
             Schedule schedule = new Schedule
@@ -245,6 +256,69 @@ namespace TEK.Core.Calendar.Domain.Services
             foreach (var shift in shifts)
             {
                 var schedules = await _unitOfWork.GetRepository<Schedule>().GetAll().Where(x => x.ShiftId == shift.Id).ToListAsync();
+
+                if (schedules != null)
+                {
+                    foreach (var schedule in schedules)
+                    {
+                        var patient = await _unitOfWork.GetRepository<Patient>().FindAsync(x => x.Id == schedule.PatientId);
+
+                        var room = await _unitOfWork.GetRepository<Room>().FindAsync(x => x.Id == shift.RoomId);
+
+                        var doctor = await _unitOfWork.GetRepository<Doctor>().FindAsync(x => x.Id == shift.DoctorId);
+
+                        var time = await _unitOfWork.GetRepository<Time>().FindAsync(x => x.Id == shift.TimeId);
+
+                        var ncr = new NewScheduleResponse
+                        {
+                            Id = schedule.Id,
+                            PatientId = schedule.PatientId,
+                            Name = patient.Name,
+                            Birthday = patient.Birthday,
+                            Room = room.Name,
+                            Doctor = doctor.Name,
+                            Date = shift.Date,
+                            Time = time.ShiftTime,
+                            Order = schedule.Order,
+                            Status = schedule.Status,
+                            BHYT = schedule.BHYT
+                        };
+
+                        if (schedule.Status != 5)
+                        {
+                            lstNsr.Add(ncr);
+                        }
+                        else
+                        {
+                            lstNsrC.Add(ncr);
+                        }
+                    }
+                }
+            }
+
+            if (lstNsrC.Count > 0)
+            {
+                foreach (var ncr in lstNsrC)
+                {
+                    lstNsr.Add(ncr);
+                }
+            }
+
+            return lstNsr;
+        }
+
+        public async Task<List<NewScheduleResponse>> GetAllScheduleResponsesByShift(string shiftID)
+        {
+            var shifts = !string.IsNullOrEmpty(shiftID) ? await _unitOfWork.GetRepository<Shift>().GetAll().Where(x => x.Id == shiftID).ToListAsync()
+                : await _unitOfWork.GetRepository<Shift>().GetAll().ToListAsync();
+
+            var lstNsr = new List<NewScheduleResponse>();
+
+            var lstNsrC = new List<NewScheduleResponse>();
+
+            foreach (var shift in shifts)
+            {
+                var schedules = await _unitOfWork.GetRepository<Schedule>().GetAll().Where(x => x.ShiftId == shift.Id).OrderBy(x => x.Order).ToListAsync();
 
                 if (schedules != null)
                 {

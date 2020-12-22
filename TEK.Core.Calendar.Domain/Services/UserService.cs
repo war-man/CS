@@ -87,6 +87,17 @@ namespace TEK.Core.Calendar.Domain.Services
                 s.Address = user.Address;
                 s.Role = user.Role;
                 s.Gender = user.Gender;
+
+                if (!string.IsNullOrEmpty(user.Password))
+                {
+                    s.Password = user.Password;
+                }
+
+                if (!string.IsNullOrEmpty(user.Username))
+                {
+                    s.Username = user.Username;
+                }
+
                 await _unitOfWork.CommitAsync();
                 return true;
             }

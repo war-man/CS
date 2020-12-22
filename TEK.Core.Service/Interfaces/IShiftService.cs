@@ -9,6 +9,7 @@ namespace TEK.Core.Service.Interfaces
     public interface IShiftService
     {
         Task<ShiftResponse> GetShifts();
+        Task<ShiftResponse> GetShiftsByRoom(string roomID);
         Task<bool> DeleteShift(string shiftID);
         Task<DoctorResponse> GetDoctors();
         Task<Doctor> AddNewDoctor(AddNewDoctorRequest request);
@@ -22,6 +23,7 @@ namespace TEK.Core.Service.Interfaces
         Task<string> CreateNewPatient(CreateNewPatientRequest request);
         Task<NewScheduleResponse> RequestNewSchedule(NewScheduleRequest request);
         Task<List<NewScheduleResponse>> GetAllScheduleResponses(string roomId);
+        Task<List<NewScheduleResponse>> GetAllScheduleResponsesByShift(string shiftID);
         Task<Schedule> ChangeScheduleStatus(ChangeScheduleStatusRequest request);
         Task<List<Invoice>> GetInvoices();
         Task<Invoice> ChangeInvoiceStatus(ChangeInvoiceStatusRequest request);
